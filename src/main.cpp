@@ -1,3 +1,4 @@
+#include <Ser2net.h>
 #include <ESP8266React.h>
 #include <LightMqttSettingsService.h>
 #include <LightStateService.h>

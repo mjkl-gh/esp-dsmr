@@ -4,47 +4,11 @@
 #include <AsyncTCP.h>
 #include <WiFi.h>
 
-#define RX_PIN 26
+#define SER2NET_PIN 36
 
-class Ser2netService {
- public:
-  bool serviceOn;
-
-  static void read(ServiceState& settings, JsonObject& root) {
-    root["service_on"] = settings.serviceOn;
-  }
-
-  static StateUpdateResult update(JsonObject& root, ServiceState& ServiceState) {
-    boolean newState = root["led_on"] | DEFAULT_LED_STATE;
-    if (lightState.ledOn != newState) {
-      lightState.ledOn = newState;
-      return StateUpdateResult::CHANGED;
-    }
-    return StateUpdateResult::UNCHANGED;
-  }
-
-  static void haRead(LightState& settings, JsonObject& root) {
-    root["state"] = settings.ledOn ? ON_STATE : OFF_STATE;
-  }
-
-  static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
-    String state = root["state"];
-    // parse new led state 
-    boolean newState = false;
-    if (state.equals(ON_STATE)) {
-      newState = true;
-    } else if (!state.equals(OFF_STATE)) {
-      return StateUpdateResult::ERROR;
-    }
-    // change the new state, if required
-    if (lightState.ledOn != newState) {
-      lightState.ledOn = newState;
-      return StateUpdateResult::CHANGED;
-    }
-    return StateUpdateResult::UNCHANGED;
-  }
-};
-#endif    
+#define DEFAULT_SERVICE_STATE false
+#define OFF_STATE "OFF"
+#define ON_STATE "ON"
 
 
 #include <HttpEndpoint.h>
@@ -60,6 +24,45 @@ class Ser2netService {
 
 #define SER2NET_SETTINGS_FILE "/config/ser2netSettings.json"
 #define SER2NET_SETTINGS_SERVICE_PATH "/rest/ser2netSettings"
+
+class Ser2netService {
+ public:
+  bool serviceOn;
+
+  static void read(Ser2netService& settings, JsonObject& root) {
+    root["service_on"] = settings.serviceOn;
+  }
+
+  static StateUpdateResult update(JsonObject& root, Ser2netService& serviceState) {
+    boolean newState = root["service_on"] | DEFAULT_SERVICE_STATE;
+    if (serviceState.serviceOn != newState) {
+      serviceState.serviceOn = newState;
+      return StateUpdateResult::CHANGED;
+    }
+    return StateUpdateResult::UNCHANGED;
+  }
+
+  static void haRead(Ser2netService& settings, JsonObject& root) {
+    root["state"] = settings.serviceOn ? ON_STATE : OFF_STATE;
+  }
+
+  static StateUpdateResult haUpdate(JsonObject& root, Ser2netService& serviceState) {
+    String state = root["state"];
+    // parse new led state 
+    boolean newState = false;
+    if (state.equals(ON_STATE)) {
+      newState = true;
+    } else if (!state.equals(OFF_STATE)) {
+      return StateUpdateResult::ERROR;
+    }
+    // change the new state, if required
+    if (serviceState.serviceOn != newState) {
+      serviceState.serviceOn = newState;
+      return StateUpdateResult::CHANGED;
+    }
+    return StateUpdateResult::UNCHANGED;
+  }
+};
 
 
 class Ser2netSettings {
@@ -97,9 +100,9 @@ class Ser2netSettingsService : public StatefulService<Ser2netSettings> {
 
   void onStationModeGotIP(const WiFiEventStationModeGotIP& event);
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
-#endif
+#endif // end ESP32
   void configureNTP();
   void configureTime(AsyncWebServerRequest* request, JsonVariant& json);
 };
 
-#endif  // end NTPSettingsService_h
+#endif  // end Ser2netService_h
