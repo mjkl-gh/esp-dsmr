@@ -32,4 +32,10 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
          name: fimware.bin
-         path: .pio/build/esp12e/firmware.bin  
+         path: .pio/build/esp12e/firmware.bin
+    - name: Upload the artifacts
+      uses: skx/github-action-publish-binaries@release-1.3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:     
+        args: '*.bin'  
