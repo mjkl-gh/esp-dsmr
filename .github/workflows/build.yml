@@ -38,4 +38,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:     
-        args: '*.bin'  
+        args: '.pio/build/esp12e/firmware.bin'  
