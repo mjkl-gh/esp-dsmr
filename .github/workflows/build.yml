@@ -13,7 +13,9 @@ jobs:
         id: date	 
         run: echo "release_date=2020-10-07T12:00:00+01:00" >> GITHUB_ENV
       - name: Test with environment variables
-        run: echo "${{ env.release_date }}"
+        run: |
+          echo "${{ env.release_date }}"
+          echo "$release_date"
 #       - name: Set up Python
 #         uses: actions/setup-python@v1
 #       - name: Install dependencies
