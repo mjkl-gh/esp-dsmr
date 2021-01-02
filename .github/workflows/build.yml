@@ -13,12 +13,12 @@ jobs:
         id: date	 
         run: |
           echo "release_date=1" >> GITHUB_ENV
-          cat $GITHUB_ENV
+          echo "cat $GITHUB_ENV" 
       - name: Test with environment variables
         run: |
           echo "${{ env.release_date }}"
           echo "$release_date"
-          cat $GITHUB_ENV
+          echo "cat $GITHUB_ENV"  
 #       - name: Set up Python
 #         uses: actions/setup-python@v1
 #       - name: Install dependencies
