@@ -11,12 +11,12 @@ jobs:
 #         uses: actions/checkout@v2
       - name: Format the date of next Tuesday
         id: tuesday
-        run: echo "abbr=$(date '+tuesday%y%m%d')" >> $GITHUB_ENV
+        run: echo "release_date=$(date '+tuesday%y%m%d')" >> $GITHUB_ENV
         
       - name: Read exported variable
         run: |
-          echo "$abbr"
-          echo "${{ env.abbr }}"
+          echo "$release_date"
+          echo "${{ env.release_date }}"
           
       - name: Get current date
         id: date	 
