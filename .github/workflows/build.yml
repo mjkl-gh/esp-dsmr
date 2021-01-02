@@ -11,7 +11,7 @@ jobs:
 #         uses: actions/checkout@v2
       - name: Format the date of next Tuesday
         id: tuesday
-        run: echo "release_date=$(date '%Y%m%d.%H%M')" >> $GITHUB_ENV
+        run: echo "release_date=$(date +'%Y%m%d.%H%M')" >> $GITHUB_ENV
         
       - name: Read exported variable
         run: |
