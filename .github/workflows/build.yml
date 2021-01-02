@@ -11,33 +11,38 @@ jobs:
         uses: actions/checkout@v2
       - name: Get current date
         id: date	 
-        run: echo "::set-env name=NOW::v$(date +'%Y%m%d.%H%M')"
-      - name: Set up Python
-        uses: actions/setup-python@v1
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install platformio
-      - name: Run PlatformIO
-        run: platformio run
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        run: echo "name=$(date +'%Y%m%d.%H%M')" >> GITHUB_ENV
+      - name: Test with environment variables
+        run: echo $TAG_NAME - $RELEASE_NAME
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.now }}
-          release_name: Release ${{ env.now }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: '.pio/build/esp12e/firmware.bin'  
-          releaseId: ${{ steps.create_release.outputs.id }}
+          TAG_NAME: nightly-tag-${{ steps.date.outputs.date }}
+          RELEASE_NAME: nightly-release-${{ steps.date.outputs.date }}
+#       - name: Set up Python
+#         uses: actions/setup-python@v1
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install platformio
+#       - name: Run PlatformIO
+#         run: platformio run
+#       - name: Create Release
+#         id: create_release
+#         uses: actions/create-release@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           tag_name: ${{ env.now }}
+#           release_name: Release ${{ env.now }}
+#           body: |
+#             Changes in this Release
+#             - First Change
+#             - Second Change
+#           draft: false
+#           prerelease: false
+#       - name: Upload the artifacts
+#         uses: skx/github-action-publish-binaries@master
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           args: '.pio/build/esp12e/firmware.bin'  
+#           releaseId: ${{ steps.create_release.outputs.id }}
