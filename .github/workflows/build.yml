@@ -7,8 +7,17 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+      - name: Format the date of next Tuesday
+        id: tuesday
+        run: echo "abbr=$(date '+tuesday%y%m%d')" >> $GITHUB_ENV
+        
+      - name: Read exported variable
+        run: |
+          echo "$abbr"
+          echo "${{ env.abbr }}"
+          
       - name: Get current date
         id: date	 
         run: |
