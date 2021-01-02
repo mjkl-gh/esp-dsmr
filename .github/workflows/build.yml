@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Get current date
         id: date	 
-        run: echo "name=$(date +'%Y-%m-%d-%H%M')" >> $GITHUB_ENV
+        run: echo "::set-env name=NOW::v$(date +'%Y%m%d.%H%M')"
       - name: Set up Python
         uses: actions/setup-python@v1
       - name: Install dependencies
@@ -26,8 +26,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ env.now }}
+          release_name: Release ${{ env.now }}
           body: |
             Changes in this Release
             - First Change
