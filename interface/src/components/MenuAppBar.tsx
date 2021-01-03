@@ -164,6 +164,14 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
               <ListItemText primary="MQTT" />
             </ListItem>
           )}
+          {features.ser2net && (
+            <ListItem to='/ser2net/' selected={path.startsWith('/ser2net/')} button component={Link}>
+              <ListItemIcon>
+                <DeviceHubIcon />
+              </ListItemIcon>
+              <ListItemText primary="Ser2net" />
+            </ListItem>
+          )}
           {features.security && (
             <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.me.admin}>
               <ListItemIcon>

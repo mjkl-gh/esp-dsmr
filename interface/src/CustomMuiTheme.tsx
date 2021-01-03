@@ -2,25 +2,30 @@ import React, { Component } from 'react';
 
 import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme, StylesProvider } from '@material-ui/core/styles';
-import { blueGrey, indigo, orange, red, green } from '@material-ui/core/colors';
+import * as colors from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
   palette: {
-    primary: indigo,
-    secondary: blueGrey,
+    type:"dark",
+    primary: {
+      main: colors.grey[900]
+    },
+    secondary: {
+      main: '#CE93D8'
+    },
     info: {
-      main: blueGrey[900]
+      main: colors.blueGrey[900]
     },
     warning: {
-      main: orange[500]
+      main: colors.orange[500]
     },
     error: {
-      main: red[500]
+      main: colors.red[500]
     },
     success: {
-      main: green[500]
+      main: colors.green[500]
     }
-  },
+  }
 });
 
 export default class CustomMuiTheme extends Component {

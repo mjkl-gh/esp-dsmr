@@ -16,7 +16,7 @@ class ProjectMenu extends Component<RouteComponentProps> {
           <ListItemIcon>
             <SettingsRemoteIcon />
           </ListItemIcon>
-          <ListItemText primary="Demo Project" />
+          <ListItemText primary="Dashboard" />
         </ListItem>
       </List>
     )
