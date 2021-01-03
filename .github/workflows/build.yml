@@ -47,5 +47,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: '.pio/build/esp12e/firmware.bin'  
+          args: '.pio/build/node32s/firmware.bin'  
           releaseId: ${{ steps.create_release.outputs.id }}
