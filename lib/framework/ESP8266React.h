@@ -20,6 +20,8 @@
 #include <MqttStatus.h>
 #include <NTPSettingsService.h>
 #include <NTPStatus.h>
+#include <Ser2netStatus.h>
+#include <Ser2netSettingsService.h>
 #include <OTASettingsService.h>
 #include <UploadFirmwareService.h>
 #include <RestartService.h>
@@ -69,6 +71,12 @@ class ESP8266React {
   }
 #endif
 
+#if FT_ENABLED(FT_SER2NET)
+  StatefulService<Ser2netSettings>* getSer2netSettingsService() {
+    return &_ser2netSettingsService;
+  }
+#endif
+
 #if FT_ENABLED(FT_OTA)
   StatefulService<OTASettings>* getOTASettingsService() {
     return &_otaSettingsService;
@@ -100,6 +108,10 @@ class ESP8266React {
 #if FT_ENABLED(FT_NTP)
   NTPSettingsService _ntpSettingsService;
   NTPStatus _ntpStatus;
+#endif
+#if FT_ENABLED(FT_SER2NET)
+  Ser2netSettingsService _ser2netSettingsService;
+  Ser2netStatus _ser2netStatus;
 #endif
 #if FT_ENABLED(FT_OTA)
   OTASettingsService _otaSettingsService;

@@ -12,6 +12,10 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
     _ntpSettingsService(server, &ESPFS, &_securitySettingsService),
     _ntpStatus(server, &_securitySettingsService),
 #endif
+#if FT_ENABLED(FT_SER2NET)
+    _ser2netSettingsService(server, &ESPFS, &_securitySettingsService),
+    _ser2netStatus(server, &_securitySettingsService),
+#endif
 #if FT_ENABLED(FT_OTA)
     _otaSettingsService(server, &ESPFS, &_securitySettingsService),
 #endif
@@ -90,6 +94,9 @@ void ESP8266React::begin() {
   _apSettingsService.begin();
 #if FT_ENABLED(FT_NTP)
   _ntpSettingsService.begin();
+#endif
+#if FT_ENABLED(FT_SER2NET)
+  _ser2netSettingsService.begin();
 #endif
 #if FT_ENABLED(FT_OTA)
   _otaSettingsService.begin();
