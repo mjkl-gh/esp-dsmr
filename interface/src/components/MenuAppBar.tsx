@@ -16,6 +16,8 @@ import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import LockIcon from '@material-ui/icons/Lock';
 import MenuIcon from '@material-ui/icons/Menu';
+import { Icon, InlineIcon } from '@iconify/react';
+import serialPort from '@iconify-icons/mdi/serial-port';
 
 import ProjectMenu from '../project/ProjectMenu';
 import { PROJECT_NAME } from '../api';
@@ -167,7 +169,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
           {features.ser2net && (
             <ListItem to='/ser2net/' selected={path.startsWith('/ser2net/')} button component={Link}>
               <ListItemIcon>
-                <DeviceHubIcon />
+                <Icon icon={serialPort} width="24" height="24" />
               </ListItemIcon>
               <ListItemText primary="Ser2net" />
             </ListItem>

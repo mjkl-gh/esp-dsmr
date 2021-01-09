@@ -15,7 +15,7 @@ void Ser2netStatus::ser2netStatus(AsyncWebServerRequest* request) {
   time_t now = time(nullptr);
 
   // only provide enabled/disabled status for now
-  root["status"] = 1;
+  root["enabled"] = 1;
 
   // device uptime in seconds
   root["uptime"] = millis() / 1000;

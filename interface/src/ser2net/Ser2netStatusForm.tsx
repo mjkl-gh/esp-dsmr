@@ -64,17 +64,6 @@ class Ser2netStatusForm extends Component<Ser2netStatusFormProps> {
           <ListItemText primary="Status" secondary={ser2netStatus(data)} />
         </ListItem>
         <Divider variant="inset" component="li" />
-            <BlockFormControlLabel
-              control={
-                <Switch
-                  checked={true}
-                  onChange={changeLedOn}
-                  color="primary"
-                />
-              }
-              label="LED State?"
-            />
-        <Divider variant="inset" component="li" />
         {data.enabled && this.renderConnectionStatus()}
       </Fragment>
     );
