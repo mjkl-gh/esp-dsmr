@@ -25,6 +25,23 @@ void OTASettingsService::loop() {
   }
 }
 
+static const char* otaErrorMessage(ota_error_t error) {
+  switch (error) {
+    case OTA_AUTH_ERROR:
+      return PSTR("Authentication failed");
+    case OTA_BEGIN_ERROR:
+      return PSTR("Begin failed");
+    case OTA_CONNECT_ERROR:
+      return PSTR("Connect failed");
+    case OTA_RECEIVE_ERROR:
+      return PSTR("Receive failed");
+    case OTA_END_ERROR:
+      return PSTR("End failed");
+    default:
+      return PSTR("Unknown error");
+  }
+}
+
 void OTASettingsService::configureArduinoOTA() {
   if (_arduinoOTA) {
 #ifdef ESP32
@@ -34,28 +51,23 @@ void OTASettingsService::configureArduinoOTA() {
     _arduinoOTA = nullptr;
   }
   if (_state.enabled) {
-    Serial.println(F("Starting OTA Update Service..."));
+    LOG_I("Starting OTA update service...");
     _arduinoOTA = new ArduinoOTAClass;
     _arduinoOTA->setPort(_state.port);
     _arduinoOTA->setPassword(_state.password.c_str());
-    _arduinoOTA->onStart([]() { Serial.println(F("Starting")); });
-    _arduinoOTA->onEnd([]() { Serial.println(F("\r\nEnd")); });
-    _arduinoOTA->onProgress([](unsigned int progress, unsigned int total) {
-      Serial.printf_P(PSTR("Progress: %u%%\r\n"), (progress / (total / 100)));
+    _arduinoOTA->onStart([this]() {
+      LOG_I("Starting OTA update");
+      _progress = 0;
     });
-    _arduinoOTA->onError([](ota_error_t error) {
-      Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR)
-        Serial.println(F("Auth Failed"));
-      else if (error == OTA_BEGIN_ERROR)
-        Serial.println(F("Begin Failed"));
-      else if (error == OTA_CONNECT_ERROR)
-        Serial.println(F("Connect Failed"));
-      else if (error == OTA_RECEIVE_ERROR)
-        Serial.println(F("Receive Failed"));
-      else if (error == OTA_END_ERROR)
-        Serial.println(F("End Failed"));
+    _arduinoOTA->onEnd([]() { LOG_I("Ending OTA update"); });
+    _arduinoOTA->onProgress([this](unsigned int progress, unsigned int total) {
+      uint8_t currentProgress = progress / (total / 100);
+      if (currentProgress != _progress) {
+        _progress = currentProgress;
+        LOGF_I("OTA update progress: %u%%", _progress);
+      }
     });
+    _arduinoOTA->onError([](ota_error_t error) { LOGF_E("OTA update error[%u]: %s", error, otaErrorMessage(error)); });
     _arduinoOTA->begin();
   }
 }

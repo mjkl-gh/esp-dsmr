@@ -41,6 +41,7 @@ void LightStateService::begin() {
 
 void LightStateService::onConfigUpdated() {
   digitalWrite(LED_PIN, _state.ledOn ? LED_ON : LED_OFF);
+  LOGF_I("The light is now: %s", _state.ledOn ? "on" : "off");
 }
 
 void LightStateService::registerConfig() {

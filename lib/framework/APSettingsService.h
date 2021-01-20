@@ -4,6 +4,7 @@
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <JsonUtils.h>
+#include <Logger.h>
 
 #include <DNSServer.h>
 #include <IPAddress.h>
