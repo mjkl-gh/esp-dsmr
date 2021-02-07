@@ -20,7 +20,7 @@ class DemoProject extends Component<RouteComponentProps> {
 
   render() {
     return (
-      <MenuAppBar sectionTitle="Demo Project">
+      <MenuAppBar sectionTitle="Dashboard">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
           <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
           <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Controller" />
