@@ -69,8 +69,8 @@ class SerialSettingsForm extends React.Component<SerialSettingsFormProps> {
           margin="normal"
         />
         <TextValidator
-          validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:8388609']}
-          errorMessages={['Config is required', "Must be a number", "Must be greater than 0 ", "Max value is 8388609"]}
+          validators={['required', 'isNumber', 'minNumber:134217744', 'maxNumber:134217791']}
+          errorMessages={['Config is required', "Must be a number", "Must be greater than 134217744 ", "Max value is 134217791"]}
           name="config"
           label="Config"
           fullWidth

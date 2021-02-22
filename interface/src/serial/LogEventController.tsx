@@ -7,7 +7,7 @@ import { LogEvent } from './types';
 import { WEB_SOCKET_ROOT } from '../api/Env';
 import LogEventConsole from './LogEventConsole';
 
-const LOG_EVENT_WEB_SOCKET_URL = WEB_SOCKET_ROOT + "log";
+const LOG_EVENT_WEB_SOCKET_URL = WEB_SOCKET_ROOT + "serial";
 
 interface LogEventControllerState {
   ws: Sockette;
