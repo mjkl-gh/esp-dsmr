@@ -3,7 +3,7 @@
 
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
-#include <Logger.h>
+//#include <Logger.h>
 #include <ESPUtils.h>
 #include <time.h>
 
@@ -19,14 +19,30 @@ class WebSocketLogHandler {
   }
 
   void begin() {
-    Logger::getInstance()->addEventHandler(std::bind(&WebSocketLogHandler::logEvent, this, std::placeholders::_1));
+    //Logger::getInstance()->addEventHandler(std::bind(&WebSocketLogHandler::logEvent, this, std::placeholders::_1));
   }
 
+  void loop() {
+    unsigned long currentMillis = millis();
+ 
+    if(currentMillis - previousMillis > 1000) {
+    // save the last time you blinked the LED 
+      previousMillis = currentMillis; 
+      helloWorld();
+    }
+  }
  private:
   AsyncWebSocket _webSocket;
+  long previousMillis;  
 
   void forbidden(AsyncWebServerRequest* request) {
     request->send(403);
+  }
+
+  void helloWorld() {
+    LogEvent helloWorldEvent;
+    helloWorldEvent.message = "Hello world";
+    logEvent(helloWorldEvent);
   }
 
   boolean logEvent(LogEvent& logEvent) {

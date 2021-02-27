@@ -103,6 +103,7 @@ void ESP8266React::begin() {
 
 void ESP8266React::loop() {
   Logger::loop();
+  _webSocketLogHandler.loop();
 
   _wifiSettingsService.loop();
   _apSettingsService.loop();
