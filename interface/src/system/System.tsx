@@ -13,8 +13,6 @@ import OTASettingsController from './OTASettingsController';
 import LogEventController from './LogEventController';
 import UploadFirmwareController from './UploadFirmwareController';
 
-import { WithFeaturesProps, withFeatures } from '../features/FeaturesContext';
-
 type SystemProps = AuthenticatedContextProps & RouteComponentProps & WithFeaturesProps;
 
 class System extends Component<SystemProps> {

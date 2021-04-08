@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { LogEvent } from './types';
+import { LogEvent, LogLevel } from './types';
 import { Theme, makeStyles, Box } from '@material-ui/core';
 import { useWindowSize } from '../components';
 import { formatIsoDateTimeToHr } from '../ntp/TimeFormat';
@@ -13,8 +13,8 @@ interface Offsets {
   leftOffset: () => number;
 }
 
-const topOffset = () => document.getElementById('system-tabs')?.getBoundingClientRect().bottom || 0;
-const leftOffset = () => document.getElementById('system-tabs')?.getBoundingClientRect().left || 0;
+const topOffset = () => document.getElementById('serial-tabs')?.getBoundingClientRect().bottom || 0;
+const leftOffset = () => document.getElementById('serial-tabs')?.getBoundingClientRect().left || 0;
 
 const useStyles = makeStyles((theme: Theme) => ({
   console: {
@@ -59,6 +59,41 @@ const LogEventConsole: FC<LogEventConsoleProps> = (props) => {
   useWindowSize();
   const classes = useStyles({ topOffset, leftOffset });
   const { events } = props;
+
+  const styleLevel = (level: LogLevel) => {
+    switch (level) {
+      case LogLevel.DEBUG:
+        return classes.debug;
+      case LogLevel.INFO:
+        return classes.info;
+      case LogLevel.WARNING:
+        return classes.warning;
+      case LogLevel.ERROR:
+        return classes.error;
+      default:
+        return classes.unknown;
+    }
+  }
+
+  const levelLabel = (level: LogLevel) => {
+    switch (level) {
+      case LogLevel.DEBUG:
+        return "DEBUG";
+      case LogLevel.INFO:
+        return "INFO";
+      case LogLevel.WARNING:
+        return "WARNING";
+      case LogLevel.ERROR:
+        return "ERROR";
+      default:
+        return "UNKNOWN";
+    }
+  }
+
+  const paddedLevelLabel = (level: LogLevel) => {
+    let label = levelLabel(level);
+    return label.padStart(7, '\xa0');
+  }
 
   return (
     <Box className={classes.console}>
