@@ -31,7 +31,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
 #endif
     _restartService(server, &_securitySettingsService),
     _factoryResetService(server, &ESPFS, &_securitySettingsService),
-    _systemStatus(server, &_securitySettingsService) {
+    _systemStatus(server, &_securitySettingsService),
     _webSocketLogHandler(server, &_securitySettingsService) {
 #ifdef PROGMEM_WWW
   // Serve static resources from PROGMEM
@@ -92,8 +92,8 @@ void ESP8266React::begin() {
   ESPFS.begin();
 #endif
   // Begin logging
-  Logger::begin(_fs);
-  Logger::getInstance()->addEventHandler(SerialLogHandler::logEvent);
+  //Logger::begin(_fs);
+  //Logger::getInstance()->addEventHandler(SerialLogHandler::logEvent);
   _webSocketLogHandler.begin();
 
   _wifiSettingsService.begin();
@@ -116,7 +116,7 @@ void ESP8266React::begin() {
 }
 
 void ESP8266React::loop() {
-  Logger::loop();
+  //Logger::loop();
   _webSocketLogHandler.loop();
 
   _wifiSettingsService.loop();

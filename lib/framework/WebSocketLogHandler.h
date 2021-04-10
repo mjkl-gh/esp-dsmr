@@ -10,6 +10,33 @@
 #define WEB_SOCKET_LOG_PATH "/ws/log"
 #define WEB_SOCKET_LOG_BUFFER 512
 
+enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
+
+class LogEvent {
+ public:
+  uint32_t id;
+  time_t time;
+  LogLevel level;
+  String file;
+  uint16_t line;
+  String message;
+
+  static void serialize(LogEvent& logEvent, JsonObject& root) {
+    root["time"] = logEvent.time;
+    root["level"] = (uint8_t)logEvent.level;
+    root["file"] = logEvent.file;
+    root["line"] = logEvent.line;
+    root["message"] = logEvent.message;
+  }
+
+  static void deserialize(JsonObject& root, LogEvent& logEvent) {
+    logEvent.time = root["time"];
+    logEvent.level = (LogLevel)root["level"].as<uint8_t>();
+    logEvent.file = root["file"] | "";
+    logEvent.line = root["line"];
+    logEvent.message = root["message"] | "";
+  }
+};
 class WebSocketLogHandler {
  public:
   WebSocketLogHandler(AsyncWebServer* server, SecurityManager* securityManager) : _webSocket(WEB_SOCKET_LOG_PATH) {

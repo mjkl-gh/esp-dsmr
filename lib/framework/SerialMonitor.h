@@ -1,6 +1,7 @@
-#ifndef WebSocketLogHandler_h
-#define WebSocketLogHandler_h
+#ifndef SerialMonitor_h
+#define SerialMonitor_h
 
+#include <Arduino.h>
 #include <time.h>
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
@@ -15,24 +16,33 @@ class WebSocketSerialHandler {
   WebSocketSerialHandler(AsyncWebServer* server, SecurityManager* securityManager) : _webSocket(WEB_SOCKET_SERIAL_PATH) {
     _webSocket.setFilter(securityManager->filterRequest(AuthenticationPredicates::IS_ADMIN));
     server->addHandler(&_webSocket);
-    //server->on(WEB_SOCKET_SERIAL_PATH, HTTP_GET, std::bind(&WebSocketSerialHandler::forbidden, this, std::placeholders::_1));
+    server->on(WEB_SOCKET_SERIAL_PATH, HTTP_GET, std::bind(&WebSocketSerialHandler::forbidden, this, std::placeholders::_1));
   }
 
   Stream* stream;
   void loop() {
     size_t len;
-      if ((stream) && (len = this->stream->available() > 0)) {
-        char buf[128];
-        this->stream->readBytes(buf, std::min(len, size_t{128}));
-        if (serialEvent(String(buf))){
-          Serial.println("Somethings was send");
-        } else {
-          Serial.println("Something went wrong");
-        };
+    if ((stream) && (len = this->stream->available() > 0)) {
+      char buf[128];
+      this->stream->readBytes(buf, std::min(len, size_t{128}));
+      if (serialEvent(String(buf))){
+        return;
+      } else {
+        Serial.println("Something went wrong");
+      };
+    }
+    unsigned long currentMillis = millis();
+ 
+    if(currentMillis - previousMillis > 1000) {
+    // save the last time you blinked the LED 
+      previousMillis = currentMillis; 
+      serialEvent("Hello world");
+    }
   };
 
  private:
   AsyncWebSocket _webSocket;
+  long previousMillis;  
 
   void forbidden(AsyncWebServerRequest* request) {
     request->send(403);

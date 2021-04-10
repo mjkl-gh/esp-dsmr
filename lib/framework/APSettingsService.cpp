@@ -49,7 +49,8 @@ void APSettingsService::startAP() {
   WiFi.softAP(_state.ssid.c_str(), _state.password.c_str(), _state.channel, _state.ssidHidden, _state.maxClients);
   if (!_dnsServer) {
     IPAddress apIp = WiFi.softAPIP();
-    LOGF_I("Starting captive portal on: %s", apIp.toString().c_str());
+    Serial.print(F("Starting captive portal on "));
+    Serial.println(apIp);
     _dnsServer = new DNSServer;
     _dnsServer->start(DNS_PORT, "*", apIp);
   }
@@ -57,12 +58,12 @@ void APSettingsService::startAP() {
 
 void APSettingsService::stopAP() {
   if (_dnsServer) {
-    LOG_I("Stopping captive portal");
+    Serial.println(F("Stopping captive portal"));
     _dnsServer->stop();
     delete _dnsServer;
     _dnsServer = nullptr;
   }
-  LOG_I("Stopping software access point");
+  Serial.println(F("Stopping software access point"));
   WiFi.softAPdisconnect(true);
 }
 
