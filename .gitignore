@@ -4,6 +4,6 @@
 *Thumbs.db
 /data/www
 /lib/framework/WWWData.h
-/interface/build
-/interface/node_modules
+build
+node_modules
 .vscode

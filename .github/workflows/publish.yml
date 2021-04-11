@@ -1,19 +1,57 @@
+name: "pre-release"
+
 on:
-  release:
-    types: [created]
-name: Handle Release
+  push:
+    branches:
+      - "main"
+
 jobs:
-  generate:
-    name: Create release-artifacts
+  pre-release:
+
+    name: "Automatic pre-release build"
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@master
-      - name: Generate the artifacts
-        uses: skx/github-action-build@master
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Get current date
+        id: build_info
+        run: echo "release_date=$(date +'%Y%m%d.%H%M')" >> $GITHUB_ENV
+      - name: Test with environment variables
+        run: |
+          echo "${{ env.release_date }}"
+          echo "$release_date"
+          echo $TAG_NAME - $RELEASE_NAME
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: nightly-tag-${{ env.release_date }}
+          RELEASE_NAME: nightly-release-${{ env.release_date }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+
+      - name: Install pio
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U platformio
+          platformio upgrade
+          platformio update
+      - name: Build web
+        run: |
+          cd interface
+          npm install
+          npm run build
+      - name: Build firmware
+        run: |
+          platformio run
+      - name: Release
+        id: "automatic_releases"
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          args: 'example-*'
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          title: Development Build v${{steps.build_info.outputs.release_date}}
+          automatic_release_tag: "latest"
+          prerelease: true
+          files: |
+            ./build/firmware/*.*
