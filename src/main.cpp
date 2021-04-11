@@ -2,6 +2,7 @@
 #include <StreamServer.h>
 #include <LightMqttSettingsService.h>
 #include <LightStateService.h>
+#include <display.h>
 
 #define SERIAL_BAUD_RATE 115200
 
@@ -33,10 +34,13 @@ void setup() {
 
   // start the server
   server.begin();
+
+  displaySetup();
 }
 
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
   serialServer.loop();
+  displayLoop();
 }
