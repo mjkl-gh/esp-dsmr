@@ -35,12 +35,17 @@ void setup() {
   // start the server
   server.begin();
 
+#if defined(M5STICKC) || defined(M5STICKCPLUS)
   displaySetup();
+#endif
 }
 
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
   serialServer.loop();
+
+#if defined(M5STICKC) || defined(M5STICKCPLUS)
   displayLoop();
+#endif  
 }
