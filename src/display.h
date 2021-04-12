@@ -19,8 +19,12 @@ void displaySetup() {
   M5.begin();
   M5.Lcd.setRotation(3);
   M5.Lcd.fillScreen(BLACK);
-  
-  M5.Lcd.setTextSize(1.2);
+#if defined(M5STICKCPLUS)
+  M5.Lcd.setTextSize(1.5);
+#endif
+#if defined(M5STICKC)
+  M5.Lcd.setTextSize(1);
+#endif
   M5.Lcd.setCursor(40, 0, 2);
   M5.Lcd.println("ESP-DSMR PROTOTYPE V2");
   RTC_TimeTypeDef TimeStruct;
