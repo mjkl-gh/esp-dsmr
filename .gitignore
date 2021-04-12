@@ -6,4 +6,5 @@
 /lib/framework/WWWData.h
 build
 node_modules
+.eslintcache
 .vscode

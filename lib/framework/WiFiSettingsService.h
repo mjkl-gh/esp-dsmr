@@ -1,14 +1,11 @@
 #ifndef WiFiSettingsService_h
 #define WiFiSettingsService_h
 
+#include <SettingValue.h>
 #include <StatefulService.h>
 #include <FSPersistence.h>
 #include <HttpEndpoint.h>
 #include <JsonUtils.h>
-
-#define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
-#define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
-#define WIFI_RECONNECTION_DELAY 1000 * 30
 
 #ifndef FACTORY_WIFI_SSID
 #define FACTORY_WIFI_SSID ""
@@ -19,8 +16,13 @@
 #endif
 
 #ifndef FACTORY_WIFI_HOSTNAME
-#define FACTORY_WIFI_HOSTNAME ESPUtils::defaultDeviceValue("esp-react-")
+#define FACTORY_WIFI_HOSTNAME "#{platform}-#{unique_id}"
 #endif
+
+#define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
+#define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
+
+#define WIFI_RECONNECTION_DELAY 1000 * 30
 
 class WiFiSettings {
  public:
@@ -55,7 +57,7 @@ class WiFiSettings {
   static StateUpdateResult update(JsonObject& root, WiFiSettings& settings) {
     settings.ssid = root["ssid"] | FACTORY_WIFI_SSID;
     settings.password = root["password"] | FACTORY_WIFI_PASSWORD;
-    settings.hostname = root["hostname"] | FACTORY_WIFI_HOSTNAME;
+    settings.hostname = root["hostname"] | SettingValue::format(FACTORY_WIFI_HOSTNAME);
     settings.staticIPConfig = root["static_ip_config"] | false;
 
     // extended settings
@@ -66,7 +68,7 @@ class WiFiSettings {
     JsonUtils::readIP(root, "dns_ip_2", settings.dnsIP2);
 
     // Swap around the dns servers if 2 is populated but 1 is not
-    if (settings.dnsIP1 == INADDR_NONE && settings.dnsIP2 != INADDR_NONE) {
+    if (IPUtils::isNotSet(settings.dnsIP1) && IPUtils::isSet(settings.dnsIP2)) {
       settings.dnsIP1 = settings.dnsIP2;
       settings.dnsIP2 = INADDR_NONE;
     }
@@ -74,8 +76,8 @@ class WiFiSettings {
     // Turning off static ip config if we don't meet the minimum requirements
     // of ipAddress, gateway and subnet. This may change to static ip only
     // as sensible defaults can be assumed for gateway and subnet
-    if (settings.staticIPConfig &&
-        (settings.localIP == INADDR_NONE || settings.gatewayIP == INADDR_NONE || settings.subnetMask == INADDR_NONE)) {
+    if (settings.staticIPConfig && (IPUtils::isNotSet(settings.localIP) || IPUtils::isNotSet(settings.gatewayIP) ||
+                                    IPUtils::isNotSet(settings.subnetMask))) {
       settings.staticIPConfig = false;
     }
     return StateUpdateResult::CHANGED;
