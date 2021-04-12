@@ -45,6 +45,7 @@ jobs:
       - name: Build firmware
         run: |
           platformio run
+        continue-on-error: true
       - name: Release
         id: "automatic_releases"
         uses: "marvinpinto/action-automatic-releases@latest"
