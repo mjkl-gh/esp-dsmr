@@ -51,7 +51,7 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          title: Development Build v${{steps.build_info.outputs.release_date}}
+          title: Development Build v${{ env.release_date }}
           automatic_release_tag: "latest"
           prerelease: true
           files: |
