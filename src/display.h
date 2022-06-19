@@ -50,7 +50,7 @@ void displayLoop() {
     time_t now = time(nullptr);
     auto datetime = localtime(&now);
     M5.Lcd.setCursor(0, 15);
-    M5.Lcd.printf("Data: %02d-%02d-%04d\n",datetime->tm_mday, datetime->tm_mon, datetime->tm_year+1900);
+    M5.Lcd.printf("Data: %02d-%02d-%04d\n",datetime->tm_mday, datetime->tm_mon+1, datetime->tm_year+1900);
     M5.Lcd.printf("Time: %02d : %02d : %02d\n",datetime->tm_hour, datetime->tm_min, datetime->tm_sec);
     M5.Lcd.printf("Wifi connected: %s", (WiFi.status() == WL_CONNECTED ? "true" : "false"));
   }

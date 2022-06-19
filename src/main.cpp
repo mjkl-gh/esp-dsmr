@@ -14,6 +14,11 @@ LightStateService lightStateService = LightStateService(&server,
                                                         &lightMqttSettingsService);
 
 void setup() {
+
+#if defined(M5STICKC) || defined(M5STICKCPLUS)
+  displaySetup();
+#endif
+
   // start the framework and demo project
   esp8266React.begin();
 
@@ -25,10 +30,6 @@ void setup() {
 
   // start the server
   server.begin();
-
-#if defined(M5STICKC) || defined(M5STICKCPLUS)
-  displaySetup();
-#endif
 }
 
 void loop() {
