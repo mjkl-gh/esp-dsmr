@@ -34,7 +34,7 @@ void setup() {
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
-  #if defined(M5STICKC) || defined(M5STICKCPLUS)
+#if defined(M5STICKC) || defined(M5STICKCPLUS)
     displayLoop();
 #endif
 }
