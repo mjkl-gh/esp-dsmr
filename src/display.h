@@ -8,6 +8,8 @@
 #include <M5StickCPlus.h>
 #endif
 
+
+#include <WiFi.h>
 #include <time.h>
 #include <lwip/apps/sntp.h>
 
@@ -43,13 +45,14 @@ void displaySetup() {
 void displayLoop() {
   static uint32_t lastCycle;
   // put your main code here, to run repeatedly:
-  if (lastCycle - millis() > 500) {
+  if (lastCycle - millis() > 20) {
     lastCycle = millis();
     time_t now = time(nullptr);
     auto datetime = localtime(&now);
     M5.Lcd.setCursor(0, 15);
     M5.Lcd.printf("Data: %02d-%02d-%04d\n",datetime->tm_mday, datetime->tm_mon, datetime->tm_year+1900);
     M5.Lcd.printf("Time: %02d : %02d : %02d\n",datetime->tm_hour, datetime->tm_min, datetime->tm_sec);
+    M5.Lcd.printf("Wifi connected: %s", (WiFi.status() == WL_CONNECTED ? "true" : "false"));
   }
 }
 #endif
