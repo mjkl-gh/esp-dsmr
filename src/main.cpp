@@ -4,8 +4,6 @@
 #include <LightStateService.h>
 #include <display.h>
 
-#define SERIAL_BAUD_RATE 115200
-
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server);
 LightMqttSettingsService lightMqttSettingsService =
@@ -16,9 +14,6 @@ LightStateService lightStateService = LightStateService(&server,
                                                         &lightMqttSettingsService);
 
 void setup() {
-  // start serial and filesystem
-  Serial.begin(SERIAL_BAUD_RATE);
-
   // start the framework and demo project
   esp8266React.begin();
 
