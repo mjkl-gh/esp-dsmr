@@ -48,7 +48,6 @@ class SerialSettings    {
         settings.config = root["config"] | FACTORY_SERIAL_CONFIG;
         settings.invert = root["invert"] | FACTORY_SERIAL_INVERTED;
         settings.tCPPort = root["port"] | FACTORY_TCP_PORT;
-        serializeJsonPretty(root, Serial);
         return StateUpdateResult::CHANGED;
     }
 };
