@@ -11,11 +11,8 @@ Provides many of the features required for IoT projects:
 * Configurable WiFi - Network scanner and WiFi configuration screen
 * Configurable Access Point - Can be continuous or automatically enabled when WiFi connection fails
 * Network Time - Synchronization with NTP
-* MQTT - Connection to an MQTT broker for automation and monitoring
 * Remote Firmware Updates - Firmware replacement using OTA update or upload via UI
 * Security - Protected RESTful endpoints and a secured user interface
-
-Features may be [enabled or disabled](#selecting-features) as required at compile time.
 
 ## Getting Started
 
@@ -23,50 +20,61 @@ Features may be [enabled or disabled](#selecting-features) as required at compil
 
 You will need the following before you can get started.
 
-* [PlatformIO](https://platformio.org/) - IDE for development
-* [Node.js](https://nodejs.org) - For building the interface with npm
+* [M5stickc(-plus)](https://shop.m5stack.com/products/m5stickc-plus-esp32-pico-mini-iot-development-kit) with our P1-hat. Or an ESP32 with your own levelshifter
+* [Esphomeflasher](https://github.com/esphome/esphome-flasher/releases)
 
-### Building and uploading the firmware
+### Flashing the device
 
-Pull the project and open it in PlatformIO. PlatformIO should download the ESP8266 platform and the project library dependencies automatically.
+Download the right Firmware from the release page. USB is for flashing over usb OTA is for updating an existing device which we will explain [here]()
 
-The project structure is as follows:
+Attach the M5stickc or ESP32 to your computer using an usb cable. The device will pop up as available from the dropdown of serial port
 
-Resource                         | Description
--------------------------------- | ----------------------------------------------------------------------
-[interface/](interface)          | React based front end
-[lib/framework/](lib/framework)  | C++ back end for the ESP8266/ESP32 device
-[src/](src)                      | The main.cpp and demo project to get you started
-[scripts/](scripts)              | Scripts that build the React interface as part of the platformio build
-[platformio.ini](platformio.ini) | PlatformIO project configuration file
+![image](https://user-images.githubusercontent.com/9350991/185467060-df3dca09-b913-4b6b-a968-0182f29e5d0c.png)
 
-### Building the firmware
+* Click browse and select the downloaded .bin file
+* Click Flash esp to now flash your device!
+### Setting up ESP-DSMR
 
-Once the platform and libraries are downloaded the back end should successfully build within PlatformIO. 
+#### Default access point settings
 
-The firmware may be built by pressing the "Build" button:
+By default, the factory settings configure the device to bring up an access point on start up which can be used to configure the device:
 
-![build](/media/build.png?raw=true "build")
+* SSID: ESP-DSMR
+* Password: esp-dsmr
 
-Alternatively type the run command:
+#### Turning the device on and off
 
-```bash
-platformio run
-```
+The device is battery powered and therefore doesn't turn off immediately once the usb connection breaks. However, it will power down once the battery is depleted. You can power up a device that was powered down by holding the on/off button (left side) for 2 secs. 
 
-#### Uploading the firmware
+Holding the on/off button for 6 secs turns the device back off.
 
-The project is configured to upload over a serial connection by default. You can change this to use OTA updates by uncommenting the relevant lines in ['platformio.ini'](platformio.ini). 
+#### Serial settings
+Serial pins should be set up correctly for the current version of P1-hats. In case they aren't, theycan be changed on the serial page -> Settings.  They should be
 
-The firmware may be uploaded to the device by pressing the "Upload" button:
+- rx-pin 36
+- tx-pin 26
 
-![uploadfw](/media/uploadfw.png?raw=true "uploadfw")
+Except for 1 very specific demo-device (You know who you are) which has:
 
-Alternatively run the 'upload' target:
+- rx-pin 26
+- tx-pin 32
 
-```bash
-platformio run -t upload
-```
+If you are using your own device you will know what pins you've connected the rx-pin to. For know select an unused pin for tx as the current software doesn't handle unset tx-pins
+
+The p1 port communicates at different speeds according to your model
+
+DSMR V2/V3 Models should operate at a baud rate of 9600. These devices are currently not supported due to to much power draw on the P1 port. We are working on an energy-saving mode to fix this
+
+DSMR V4.x/V5.x operate at a baud rate of 115200
+
+### Updating a device
+
+For updating an existing device with new firmware first download the right firmware for your device. For OTA updating select the xxx-OTA.bin Afterwards visit the System -> Upload firmware page of your device. Drop the firmware inside the box shown
+
+![image](https://user-images.githubusercontent.com/9350991/185467864-debc14d2-d3d4-4430-9a90-beb0c6f2bb58.png)
+
+Your device should be updated and reboot after a while. This might take a while depending on your esp-dsmr's network connection
+
 
 ### Building & uploading the interface
 
@@ -76,22 +84,7 @@ The interface will be automatically built by PlatformIO before it builds the fir
 
 ## Factory settings
 
-The framework has built-in factory settings which act as default values for the various configurable services where settings are not saved on the file system. These settings can be overridden using the build flags defined in [factory_settings.ini](factory_settings.ini).
-
-Customize the settings as you see fit, for example you might configure your home WiFi network as the factory default:
-
-```ini
-  -D FACTORY_WIFI_SSID=\"My Awesome WiFi Network\"
-  -D FACTORY_WIFI_PASSWORD=\"secret\"
-  -D FACTORY_WIFI_HOSTNAME=\"awesome_light_controller\"
-```
-
-### Default access point settings
-
-By default, the factory settings configure the device to bring up an access point on start up which can be used to configure the device:
-
-* SSID: ESP8266-React
-* Password: esp-react
+The framework has built-in factory settings which act as default values for the various configurable services where settings are not saved on the file system.
 
 ### Security settings and user credentials
 
@@ -102,222 +95,8 @@ Username | Password
 admin    | admin
 guest    | guest
 
-It is recommended that you change the user credentials from their defaults better protect your device. You can do this in the user interface, or by modifying [factory_settings.ini](factory_settings.ini) as mentioned above.
+It is recommended that you change the user credentials from their defaults better protect your device. You can do this in the user interface.
 
-### Customizing the factory time zone setting
-
-Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.tsx](interface/src/ntp/TZ.tsx). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
-
-```ini
-  -D FACTORY_NTP_TIME_ZONE_LABEL=\"America/Los_Angeles\"
-  -D FACTORY_NTP_TIME_ZONE_FORMAT=\"PST8PDT,M3.2.0,M11.1.0\"
-```
-
-### Placeholder substitution
-
-Various settings support placeholder substitution, indicated by comments in [factory_settings.ini](factory_settings.ini). This can be particularly useful where settings need to be unique, such as the Access Point SSID or MQTT client id. The following placeholders are supported:
-
-Placeholder  | Substituted value 
------------  | -----------------
-#{platform}  | The microcontroller platform, e.g. "esp32" or "esp8266"
-#{unique_id} | A unique identifier derived from the MAC address, e.g. "0b0a859d6816"
-#{random}    | A random number encoded as a hex string, e.g. "55722f94"
-
-You may use SettingValue::format in your own code if you require the use of these placeholders. This is demonstrated in the demo project:
-
-```cpp
-  static StateUpdateResult update(JsonObject& root, LightMqttSettings& settings) {
-    settings.mqttPath = root["mqtt_path"] | SettingValue::format("homeassistant/light/#{unique_id}");
-    settings.name = root["name"] | SettingValue::format("light-#{unique_id}");
-    settings.uniqueId = root["unique_id"] | SettingValue::format("light-#{unique_id}");
-    return StateUpdateResult::CHANGED;
-  }
-};
-```
-
-## Building for different devices
-
-This project supports ESP8266 and ESP32 platforms. To support OTA programming, enough free space to upload the new sketch and file system image will be required. It is recommended that a board with at least 2mb of flash is used.
-
-The pre-configured environments are "esp12e" and "node32s". These are common ESP8266/ESP32 variants with 4mb of flash:
-
-![ESP12E](/media/esp12e.jpg?raw=true "ESP12E") ![ESP32](/media/esp32.jpg?raw=true "ESP32")
-
-The settings file ['platformio.ini'](platformio.ini) configures the supported environments. Modify these, or add new environments for the devides you need to support. The default environments are as follows:
-
-```ini
-[env:esp12e]
-platform = espressif8266
-board = esp12e
-board_build.f_cpu = 160000000L
-
-[env:node32s]
-platform = espressif32
-board = node32s
-```
-
-If you want to build for a different device, all you need to do is re-configure ['platformio.ini'](platformio.ini) and select an alternative environment by modifying the default_envs variable. Building for the common esp32 "node32s" board for example:
-
-```ini
-[platformio]
-;default_envs = esp12e
-default_envs = node32s
-```
-
-## Customizing and theming
-
-The framework, and MaterialUI allows for a reasonable degree of customization with little effort.
-
-### Theming the app
-
-The app can be easily themed by editing the [MaterialUI theme](https://mui.com/customization/typography/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomTheme.tsx) as you desire. For example, here is a dark theme:
-
-```js
-const theme = responsiveFontSizes(
-  createTheme({
-    palette: {
-      mode: "dark",
-      text: {
-        primary: '#fff',
-        secondary: grey[500],
-      },
-      primary: {
-        main: indigo[500]
-      },
-      secondary: {
-        main: blueGrey[800]
-      },
-      info: {
-        main: indigo[800]
-      },
-      warning: {
-        main: orange[800]
-      },
-      error: {
-        main: red[800]
-      },
-      success: {
-        main: green[800]
-      }
-    }
-  })
-);
-```
-
-![Dark Theme](/media/dark.png?raw=true "Dark Theme")
-## Back end
-
-The back end is a set of REST endpoints hosted by a [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instance. The ['lib/framework'](lib/framework) directory contains the majority of the back end code. The framework contains of a number of useful utility classes which you can use when extending it. The project also comes with a demo project to give you some help getting started. 
-
-The framework's source is split up by feature, for example [WiFiScanner.h](lib/framework/WiFiScanner.h) implements the end points for scanning for available networks where as [WiFiSettingsService.h](lib/framework/WiFiSettingsService.h) handles configuring the WiFi settings and managing the WiFi connection.
-
-### Initializing the framework
-
-The ['src/main.cpp'](src/main.cpp) file constructs the webserver and initializes the framework. You can add endpoints to the server here to support your IoT project. The main loop is also accessable so you can run your own code easily. 
-
-The following code creates the web server and esp8266React framework:
-
-```cpp
-AsyncWebServer server(80);
-ESP8266React esp8266React(&server);
-```
-
-Now in the `setup()` function the initialization is performed:
-
-```cpp
-void setup() {
-  // start serial and filesystem
-  Serial.begin(SERIAL_BAUD_RATE);
-
-  // start the framework and demo project
-  esp8266React.begin();
-
-  // start the server
-  server.begin();
-}
-```
-
-Finally the loop calls the framework's loop function to service the frameworks features.
-
-```cpp
-void loop() {
-  // run the framework's loop function
-  esp8266React.loop();
-}
-```
-
-#### MQTT
-
-The framework includes an MQTT client which can be configured via the UI. MQTT requirements will differ from project to project so the framework exposes the client for you to use as you see fit. The framework does however provide a utility to interface StatefulService to a pair of pub/sub (state/set) topics. This utility can be used to synchronize state with software such as Home Assistant.
-
-[MqttPubSub.h](lib/framework/MqttPubSub.h) allows you to publish and subscribe to synchronize state over a pair of MQTT topics. MqttPubSub automatically pushes changes to the "pub" topic and reads updates from the "sub" topic.
-
-### Security features
-
-The framework has security features to prevent unauthorized use of the device. This is driven by [SecurityManager.h](lib/framework/SecurityManager.h).
-
-On successful authentication, the /rest/signIn endpoint issues a [JSON Web Token (JWT)](https://jwt.io/) which is then sent using Bearer Authentication. The framework come with built-in predicates for verifying a users access privileges. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h) and are as follows:
-
-Predicate            | Description
--------------------- | -----------
-NONE_REQUIRED        | No authentication is required.
-IS_AUTHENTICATED     | Any authenticated principal is permitted.
-IS_ADMIN             | The authenticated principal must be an admin.
-
-You can use the security manager to wrap any request handler function with an authentication predicate:
-
-```cpp
-server->on("/rest/someService", HTTP_GET, 
-  _securityManager->wrapRequest(std::bind(&SomeService::someService, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
-);
-```
-
-### Accessing settings and services
-
-The framework supplies access to various features via getter functions:
-
-SettingsService              | Description
----------------------------- | ----------------------------------------------
-getFS()                      | The filesystem used by the framework
-getSecurityManager()         | The security manager - detailed above
-getSecuritySettingsService() | Configures the users and other security settings
-getWiFiSettingsService()     | Configures and manages the WiFi network connection
-getAPSettingsService()       | Configures and manages the Access Point
-getNTPSettingsService()      | Configures and manages the network time
-getOTASettingsService()      | Configures and manages the Over-The-Air update feature
-getMqttSettingsService()     | Configures and manages the MQTT connection
-getMqttClient()              | Provides direct access to the MQTT client instance
-
-The core features use the [StatefulService.h](lib/framework/StatefulService.h) class and can therefore you can change settings or observe changes to settings through the read/update API.
-
-Inspect the current WiFi settings:
-
-```cpp
-esp8266React.getWiFiSettingsService()->read([&](WiFiSettings& wifiSettings) {
-  Serial.print("The ssid is:");
-  Serial.println(wifiSettings.ssid);
-});
-```
-
-Configure the WiFi SSID and password manually:
-
-```cpp
-esp8266React.getWiFiSettingsService()->update([&](WiFiSettings& wifiSettings) {
-  wifiSettings.ssid = "MyNetworkSSID";
-  wifiSettings.password = "MySuperSecretPassword";
-  return StateUpdateResult::CHANGED; 
-}, "myapp");
-```
-
-Observe changes to the WiFiSettings:
-
-```cpp
-esp8266React.getWiFiSettingsService()->addUpdateHandler(
-  [&](const String& originId) {
-    Serial.println("The WiFi Settings were updated!");
-  }
-);
-```
 
 ## Credits
 
