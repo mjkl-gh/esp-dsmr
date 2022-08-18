@@ -25,7 +25,7 @@ You will need the following before you can get started.
 
 ### Flashing the device
 
-Download the right Firmware from the release page. USB is for flashing over usb OTA is for updating an existing device which we will explain [here]()
+Download the right Firmware from the release page. USB is for flashing over usb OTA is for updating an existing device which we will explain [here](#updating-a-device)
 
 Attach the M5stickc or ESP32 to your computer using an usb cable. The device will pop up as available from the dropdown of serial port
 
@@ -75,12 +75,6 @@ For updating an existing device with new firmware first download the right firmw
 
 Your device should be updated and reboot after a while. This might take a while depending on your esp-dsmr's network connection
 
-
-### Building & uploading the interface
-
-The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~150k, which easily fits on the device.
-
-The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either PROGMEM or the filesystem as your project requires. The default configuration is to serve the content from PROGMEM, serving from the filesystem requires an additional upload step which is [documented below](#serving-the-interface-from-the-filesystem).
 
 ## Factory settings
 
