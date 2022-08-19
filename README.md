@@ -91,6 +91,13 @@ guest    | guest
 
 It is recommended that you change the user credentials from their defaults better protect your device. You can do this in the user interface.
 
+## Roadmap
+
+- Logging framework
+- MQTT support
+- Internal dashboard
+- Actual GUI on LCD
+- Low-power mode for DSMR V2
 
 ## Credits
 
