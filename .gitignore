@@ -4,7 +4,9 @@
 *Thumbs.db
 /data/www
 /lib/framework/WWWData.h
-/interface/build
-/interface/node_modules
-/interface/.eslintcache
+build
+.eslintcache
 .vscode
+
+
+node_modules
