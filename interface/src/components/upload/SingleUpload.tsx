@@ -1,12 +1,11 @@
-import { FC, Fragment } from 'react';
-import { useDropzone, DropzoneState } from 'react-dropzone';
+import { FC, Fragment} from 'react';
+import { useDropzone, DropzoneState, Accept } from 'react-dropzone';
+import {AxiosProgressEvent } from 'axios';
 
 import { Box, Button, LinearProgress, Theme, Typography, useTheme } from '@mui/material';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CancelIcon from '@mui/icons-material/Cancel';
-
-const progressPercentage = (progress: ProgressEvent) => Math.round((progress.loaded * 100) / progress.total);
 
 const getBorderColor = (theme: Theme, props: DropzoneState) => {
   if (props.isDragAccept) {
@@ -24,9 +23,9 @@ const getBorderColor = (theme: Theme, props: DropzoneState) => {
 export interface SingleUploadProps {
   onDrop: (acceptedFiles: File[]) => void;
   onCancel: () => void;
-  accept?: string | string[];
+  accept?: Accept;
   uploading: boolean;
-  progress?: ProgressEvent;
+  progress?: AxiosProgressEvent;
 }
 
 const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploading, progress }) => {
@@ -36,8 +35,8 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploadi
 
   const progressText = () => {
     if (uploading) {
-      if (progress?.lengthComputable) {
-        return `Uploading: ${progressPercentage(progress)}%`;
+      if (progress?.progress && progress?.estimated) {
+        return `Uploading: ${(progress?.progress *100).toFixed(0)}% Time remaining: ${progress?.estimated?.toFixed(0)} seconds`;
       }
       return "Uploading\u2026";
     }
@@ -71,8 +70,8 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploadi
           <Fragment>
             <Box width="100%" p={2}>
               <LinearProgress
-                variant={!progress || progress.lengthComputable ? "determinate" : "indeterminate"}
-                value={!progress ? 0 : progress.lengthComputable ? progressPercentage(progress) : 0}
+                variant={!progress || progress.progress ? "determinate" : "indeterminate"}
+                value={!progress ? 0 : progress.progress ? (progress.progress*100) : 0}
               />
             </Box>
             <Button startIcon={<CancelIcon />} variant="contained" color="secondary" onClick={onCancel}>

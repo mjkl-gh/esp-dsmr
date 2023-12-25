@@ -11,7 +11,7 @@ interface UploadFirmwareProps {
 const FirmwareFileUpload: FC<UploadFirmwareProps> = ({ uploadFirmware }) => {
 
   const [uploadFile, cancelUpload, uploading, uploadProgress] = useFileUpload({ upload: uploadFirmware });
-
+  
   return (
     <>
       <MessageBox
@@ -20,7 +20,7 @@ const FirmwareFileUpload: FC<UploadFirmwareProps> = ({ uploadFirmware }) => {
         my={2}
       />
       <SingleUpload
-        accept="application/octet-stream"
+        accept={{"accept": ["application/octet-stream"]}}
         onDrop={uploadFile}
         onCancel={cancelUpload}
         uploading={uploading}

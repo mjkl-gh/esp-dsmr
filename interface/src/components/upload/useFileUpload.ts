@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import axios, { AxiosPromise, CancelTokenSource } from 'axios';
+import axios, { AxiosPromise, CancelTokenSource, AxiosProgressEvent } from 'axios';
 import { useSnackbar } from "notistack";
 
 import { extractErrorMessage } from '../../utils';
@@ -12,7 +12,7 @@ interface MediaUploadOptions {
 const useFileUpload = ({ upload }: MediaUploadOptions) => {
   const { enqueueSnackbar } = useSnackbar();
   const [uploading, setUploading] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<ProgressEvent>();
+  const [uploadProgress, setUploadProgress] = useState<AxiosProgressEvent>();
   const [uploadCancelToken, setUploadCancelToken] = useState<CancelTokenSource>();
 
   const resetUploadingStates = () => {

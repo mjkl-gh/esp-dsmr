@@ -1,6 +1,6 @@
 import { AxiosPromise } from "axios";
-import * as H from 'history';
-import jwtDecode from 'jwt-decode';
+import type H from 'history';
+import { jwtDecode } from 'jwt-decode';
 import { Path } from "react-router-dom";
 
 import { Features, Me, SignInRequest, SignInResponse } from "../types";
