@@ -22,7 +22,7 @@ def buildWeb():
     os.chdir("interface")
     print("Building interface with npm")
     try:
-        env.Execute("npm install")
+        env.Execute("npm ci")
         env.Execute("npm run build")
         buildPath = Path("build")
         wwwPath = Path("../data/www")
